@@ -1,5 +1,6 @@
 import random
 # TODO: Import the virus clase
+from virus import Virus
 
 class Person(object):
     '''
@@ -53,5 +54,12 @@ class Person(object):
     def did_survive_infection():
         # TODO:  Finish this method. Follow the instructions in the class documentation
         # for resolve_infection.  If person dies, set is_alive to False and return False.
-        # If person lives, set is_vaccinated = True, infected = None, return True.  
-        pass
+        # If person lives, set is_vaccinated = True, infected = None, return True.
+        chances_of_survival = random.randrange(0,1)
+        if chances_of_survival < self.infected.mortality_rate:
+            self.is_alive = False
+            return False
+        else:
+            self.is_vaccinated = True
+            self.infected = Nonet
+            return True
