@@ -73,20 +73,17 @@ class Simulation(object):
 
     def __init__(self, population_size, vacc_percentage, virus, virus_name,
                  mortality_rate, basic_repro_num, is_alive=True, initial_infected=1):
-        self.pop_size = pop_size
+        self.population_size = population_size
         self.population = []
-        self.total_infected = initial_infected
+        self.total_infected = 0
         self.current_infected = 0
-        self.next_id = 0
-        self.is_alive = is_alive #boolean value
-        self.vacc_percentage = vacc_percentage
-        self.virus = virus
+        self.next_person_id = 0
+        self.virus_name = virus_name
         self.mortality_rate = mortality_rate
         self.basic_repro_num = basic_repro_num
         self.file_name = "{}_simulation_pop_{}_vp_{}_infected_{}.txt".format(
-            virus, pop_size, vacc_percentage, initial_infected)
-        self.population = self._create_population(initial_infected)
-        self.logger = Logger("./logs/logger.txt")
+            virus_name, population_size, vacc_percentage, initial_infected)
+        self.logger = Logger("logger.txt")
         # This attribute will be used to keep track of all the people that
         # catch the infection during a given time step. Store each newly
         # infected person's .ID attribute in here.
