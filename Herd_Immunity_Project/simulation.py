@@ -174,7 +174,7 @@ class Simulation(object):
         time_step_counter = 0
         # TODO: Remember to set this variable to an intial call of
         # self._simulation_should_continue()!
-        should_continue = None
+        should_continue = self._simulation_should_continue()
         while should_continue:
         # TODO: for every iteration of this loop, call self.time_step() to compute another
         # round of this simulation.  At the end of each iteration of this loop, remember
@@ -185,6 +185,8 @@ class Simulation(object):
             self.logger.log_time_step(time_step_counter, False)
             should_continue = self._simulation_should_continue()
         print('The simulation has ended after {} turns.'.format(time_step_counter))
+
+
     def time_step(self):
         # TODO: Finish this method!  This method should contain all the basic logic
         # for computing one time step in the simulation.  This includes:
@@ -233,7 +235,7 @@ class Simulation(object):
             #     Simulation object's newly_infected array, so that their .infected
             #     attribute can be changed to True at the end of the time step.
         # TODO: Remember to call self.logger.log_interaction() during this method!
-         if not random_person.is_vaccinated and not random_person.infected:
+        if not random_person.is_vaccinated and not random_person.infected:
             randNum = random.random()
             if randNum < self.basic_repro_num:
                 self.newly_infected.append(random_person._id)
