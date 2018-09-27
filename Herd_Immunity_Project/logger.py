@@ -67,7 +67,8 @@ class Logger(object):
         # since 'w' overwrites the file.
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-        pass
+        with open('self.file_name', 'w') as file:
+            file.write("{}\t {}\t {}\t {}\t {}\n".format(pop_size, vacc_percentage, virus_name, mortality_rate, basic_repro_num))
 
     def log_interaction(self, person1, person2, did_infect=None,
                         person2_vacc=None, person2_sick=None):
@@ -82,7 +83,9 @@ class Logger(object):
         # all the possible edge cases!
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-        pass
+        with open(self.file_name, "a") as file:
+            if did_infect:
+                file.write("Person{} has infected person{}\n".format(person1._id, person2._id))
 
     def log_infection_survival(self, person, did_die_from_infection):
         # TODO: Finish this method.  The Simulation object should use this method to log
@@ -92,7 +95,22 @@ class Logger(object):
         # on the format of the log.
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-        pass
+        with open(self.file_name, 'a') as file:
+            if did_die_from_infection:
+                file.write("Person{} has died\n".format(person._id))
+            else:
+                file.write("Person{} is alive\n".format(person._id))
+
+
+    def log_continue(self, caseNum):
+        with open(self.file_name, 'a') as file:
+            if caseNum == 0:
+                file.write("End\n")
+            elif caseNum == 0:
+                file.write("End\n")
+            else:
+                file.write("New timestep\n")
+                
 
     def log_time_step(self, time_step_number):
         # TODO: Finish this method.  This method should log when a time step ends, and a
@@ -103,4 +121,8 @@ class Logger(object):
         # to compute these statistics for you, as a Logger's job is just to write logs!
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-        pass
+        with open(self.file_name, 'a') as file:
+            if isStart:
+                file.write("Time Step #{} has started\n".format(time_step_number))
+            else:
+                file.write("Time Step #{} has ended\n".format(time_step_number))
