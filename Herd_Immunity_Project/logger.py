@@ -67,9 +67,9 @@ class Logger(object):
         # since 'w' overwrites the file.
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-        f = open("./logs/logger.txt", "w")
-        line_one = ("{}\t{}\t{}\t{}\t{}\n".format(pop_size, vac_percent,
-                    virus, kill_rate, vitality_rate))
+        f = open("logger.txt", "w")
+        line_one = ("{}\t{}\t{}\t{}\t{}\n".format(pop_size, vacc_percentage,
+                    virus_name, mortality_rate, basic_repro_num))
         f.write(line_one)
         f.close()
         return line_one
@@ -89,7 +89,7 @@ class Logger(object):
         # event logged ends up on a separate line!
         interaction = ("{}\t{}\t{}\t{}\t{}\n".format(person1, person2,
                        did_infect, person2_vacc, person2_sick))
-        with open("./logs/logger.txt", "a") as f:
+        with open("logger.txt", "a") as f:
             f.write(interaction)
 
     def log_infection_survival(self, person, did_die_from_infection):

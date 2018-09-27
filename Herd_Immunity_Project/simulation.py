@@ -71,14 +71,14 @@ class Simulation(object):
         -- Once len(population) is the same as self.population_size, returns population.
     '''
 
-    def __init__(self, population_size, vacc_percentage,virus, virus_name,
-                 mortality_rate, basic_repro_num, is_alive, initial_infected=1):
+    def __init__(self, population_size, vacc_percentage, virus, virus_name,
+                 mortality_rate, basic_repro_num, is_alive=True, initial_infected=1):
         self.pop_size = pop_size
         self.population = []
         self.total_infected = initial_infected
         self.current_infected = 0
         self.next_id = 0
-        self.is_alive = is_alive
+        self.is_alive = is_alive #boolean value
         self.vacc_percentage = vacc_percentage
         self.virus = virus
         self.mortality_rate = mortality_rate
@@ -117,16 +117,16 @@ class Simulation(object):
             self.next_id += 1
             # Instantiate Person objects with infection=virus
             if infected_count != initial_infected:
-                person_sick = Person(self.next_id, False, infected=self.virus)
+                person_sick = Person(self.next_id, False, infected=self.virus, is_alive=True)
                 self.population.append(person_sick)
                 infected_count += 1
             else:
                 # Randomly instantiate Person object with vaccination
                 if random.uniform(0, 1) < self.vacc_percentage:
-                    self.population.append(Person(self.next_id, True))
+                    self.population.append(Person(self.next_id, True, is_alive=True))
                 else:
                     # Instantiate Person with no vaccination or infection
-                    self.population.append(Person(self.next_id, False))
+                    self.population.append(Person(self.next_id, False, is_alive=True))
         return self.population
 
     def _simulation_should_continue(self):
@@ -261,5 +261,5 @@ if __name__ == "__main__":
     else:
         initial_infected = 1
 simulation = Simulation(pop_size, vacc_percentage, virus_name, mortality_rate,
-                            basic_repro_num, initial_infected, is_alive)
+                            basic_repro_num, initial_infected)
 simulation.run()
