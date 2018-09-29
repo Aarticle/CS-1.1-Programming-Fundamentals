@@ -107,26 +107,28 @@ class Simulation(object):
         # Store the array that this method will return in the self.population attribute.
 
     def _create_population(self, initial_infected):
-        population = []
+        self.population = []
         infected_count = 0
-        while len(population) != self.population_size:
+        self.current_infected = initial_infected
+        while len(self.population) != self.population_size:
+            self.next_person_id += 1
             if infected_count !=  initial_infected:
                 #Set person ID and add sick population
-                newPersonId = len(population)
-                sickPerson = Person(newPersonId, False, True)
-                self.newly_infected.append(newPersonId)
-                population.append(sickPerson)
+                next_person_id = len(self.population)
+                sick_person = Person(self.next_person_id, False, infected=self.virus)
+                self.newly_infected.append(next_person_id)
+                self.population.append(sick_person)
                 infected_count += 1
             else:
-                newPersonId = len(population)
-                newPersonIsVaccinated = None
+                next_person_id = len(self.population)
+                new_person_is_vaccinated = None
                 if(random.random() < vacc_percentage):
-                    newPersonIsVaccinated = True
+                    new_person_is_vaccinated = True
                 else:
-                    newPersonIsVaccinated = False
-                newPerson = Person(newPersonId, newPersonIsVaccinated, False)
-                population.append(newPerson)
-            return population
+                    new_person_is_vaccinated = False
+                new_person = Person(self.new_person_id, new_person_is_vaccinated, False)
+                population.append(new_person)
+            return self.population
 
 
     def _simulation_should_continue(self):
@@ -136,23 +138,10 @@ class Simulation(object):
         #     - The entire population is dead.
         #     - There are no infected people left in the population.
         # In all other instances, the simulation should continue.
-        infectedPeopleCount = 0
-        deadPeopleCount = 0
         for person in self.population:
-            if person.is_alive is True:
-                if person.infected:
-                    infectedPeopleCount += 1
-            else:
-                deadPeopleCount += 1
-        if deadPeopleCount == len(self.population):
-            self.logger.log_continue(0)
-            return False
-        elif infectedPeopleCount == 0:
-            self.logger.log_continue(1)
-            return False
-        else:
-            self.logger.log_continue(2)
-            return True
+            if person.is_alive and person.infected:
+                return True
+        return False
 
 
     def run(self):
@@ -172,11 +161,10 @@ class Simulation(object):
         time_step_counter = 0
         should_continue = self._simulation_should_continue()
         while should_continue:
-            time_step_counter += 1
-            self.logger.log_time_step(time_step_counter, True)
             self.time_step()
-            self.logger.log_time_step(time_step_counter, False)
             should_continue = self._simulation_should_continue()
+            time_step_counter += 1
+            self.logger.log_time_step(time_step_counter)
         print('The simulation has ended after {} turns.'.format(time_step_counter))
 
 
@@ -196,9 +184,9 @@ class Simulation(object):
                 if person.infected and person.is_alive:
                     i = 0
                     while i < 100:
-                        thisPerson = self.population[random.randint(0, len(self.population) - 1)]
-                        if thisPerson.is_alive:
-                            self.interaction(person, thisPerson)
+                        random_person = self.population[random.randint(0, len(self.population) - 1)]
+                        if random_person.is_alive:
+                            self.interaction(person, random_person)
                             i = i + 1
                     self._infect_newly_infected()
                     if(random.random() < self.mortality_rate):

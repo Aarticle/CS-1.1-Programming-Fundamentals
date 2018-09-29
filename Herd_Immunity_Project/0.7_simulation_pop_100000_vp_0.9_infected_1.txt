@@ -1,1 +1,4 @@
 New timestep
+New timestep
+New timestep
+Person1 is alive

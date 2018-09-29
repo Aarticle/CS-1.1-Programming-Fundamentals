@@ -42,10 +42,10 @@ class Person(object):
             is_vaccinated attribute is changed to True, and set self.infected to None.
     '''
 
-    def __init__(self, _id, is_vaccinated, is_alive, infected=None):
+    def __init__(self, _id, is_vaccinated, is_alive=True, infected=None):
         # TODO:  Finish this method.  Follow the instructions in the class documentation
         # to set the corret values for the following attributes.
-        self._id = None
+        self._id = _id
         self.is_vaccinated = is_vaccinated
         self.is_alive = is_alive
         self.infected = infected
