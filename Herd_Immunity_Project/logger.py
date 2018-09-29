@@ -96,11 +96,22 @@ class Logger(object):
         # on the format of the log.
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-        with open('logger.txt', 'a') as file:
+        with open(self.file_name, 'a') as file:
             if did_die_from_infection:
                 file.write("Person{} has died\n".format(person._id))
             else:
                 file.write("Person{} is alive\n".format(person._id))
+
+
+    def log_continue(self, caseNum):
+
+        with open(self.file_name, 'a') as file:
+            if caseNum == 0:
+                file.write("End\n")
+            elif caseNum == 0:
+                file.write("End\n")
+            else:
+                file.write("New timestep\n")
 
 
     def log_time_step(self, time_step_number):
