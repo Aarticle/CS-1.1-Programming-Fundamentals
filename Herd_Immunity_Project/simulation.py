@@ -76,6 +76,8 @@ class Simulation(object):
         self.population_size = population_size
         self.population = []
         self.total_infected = 0
+        self.vacc_percentage = vacc_percentage
+        self.virus = virus
         self.current_infected = 0
         self.next_person_id = 0
         self.virus_name = virus_name
