@@ -83,6 +83,7 @@ class Simulation(object):
         self.virus_name = virus_name
         self.mortality_rate = mortality_rate
         self.basic_repro_num = basic_repro_num
+        self._virus = Virus(virus_name, mortality_rate, basic_repro_num)
         self.file_name = "{}_simulation_pop_{}_vp_{}_infected_{}.txt".format(
             virus_name, population_size, vacc_percentage, initial_infected)
         # This attribute will be used to keep track of all the people that
@@ -102,33 +103,27 @@ class Simulation(object):
         # self._infect_newly_infected() and then reset .newly_infected back to an empty
         # list.
         self.newly_infected = []
-        self.population = self._create_population(initial_infected)
+        self.population = self._create_population(initial_infected,population_size, initial_infected, vacc_percentage)
         # TODO: Call self._create_population() and pass in the correct parameters.
         # Store the array that this method will return in the self.population attribute.
 
-    def _create_population(self, initial_infected):
-        self.population = []
+    def _create_population(self, population, population_size, initial_infected, vacc_percentage):
+        population = []
         infected_count = 0
-        self.current_infected = initial_infected
-        while len(self.population) != self.population_size:
-            self.next_person_id += 1
+        next_person_id = 0
+        while len(population) != population_size:
+            next_person_id = len(population)
             if infected_count !=  initial_infected:
                 #Set person ID and add sick population
-                next_person_id = len(self.population)
-                sick_person = Person(self.next_person_id, False, infected=self.virus)
-                self.newly_infected.append(next_person_id)
-                self.population.append(sick_person)
+                population.append(Person(next_person_id, False, self._virus))
                 infected_count += 1
             else:
-                next_person_id = len(self.population)
-                new_person_is_vaccinated = None
                 if(random.random() < vacc_percentage):
-                    new_person_is_vaccinated = True
+                     population.append(Person(next_person_id, True))
                 else:
-                    new_person_is_vaccinated = False
-                new_person = Person(self.new_person_id, new_person_is_vaccinated, False)
-                population.append(new_person)
-            return self.population
+                     population.append(Person(next_person_id, False))
+
+            return population
 
 
     def _simulation_should_continue(self):
