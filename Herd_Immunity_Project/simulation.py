@@ -178,15 +178,15 @@ class Simulation(object):
             #               - Call simulation.interaction(person, random_person)
             #               - Increment interaction counter by 1.
         interactions = 0
-        while interactions < 100:
-            for person in self.population:
-                if person.infected and person.is_alive:
-                    person_counter = True
-                    while person_counter:
-                        random_person = self.population[random_person_id]
-                        random_person_id = random.randint(0, self.population_size-1)
+        for sick_person in self.infected_now:
+            while interaction_count < 100:
+                  alive = False
+                    while not alive:
+                        random_person = self.population[random.randint(0, self.population_size - 1)]
                         if random_person.is_alive:
-                            self.interaction(person, random_person)
+                            alive = True
+                    self.interaction(sick_person, random_person)
+                            self.interaction(healthy_person, infected_person)
                             interactions += 1
                             person_counter = False
 

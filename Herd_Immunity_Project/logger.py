@@ -93,7 +93,7 @@ class Logger(object):
         with open('./logs/' + self.file_name, 'a') as f:
             f.write(interaction)
 
-    def log_infection_survival(self, person, did_die_from_infection):
+    def log_infection_survival(self, sick_person, random_person, did_infect=None):
         # TODO: Finish this method.  The Simulation object should use this method to log
         # the results of every call of a Person object's .resolve_infection() method.
         # If the person survives, did_die_from_infection should be False.  Otherwise,
@@ -101,14 +101,20 @@ class Logger(object):
         # on the format of the log.
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-        result = ""
-        if not did_die_from_infection:
-            result = "survived infection"
-        else:
-            result = "died from infection"
-        text_two = "{} {}\n".format(person, result)
-        with open('./logs/' + self.file_name, 'a') as f:
-            f.write(text_two)
+
+            if did_infect:
+                f.write(str(sick_person._id) + ' infected ' + str(random_person._id) + '\n')
+            elif random_person.is_vaccinated:
+                f.write(str(sick_person._id) + ' did not infect ' + str(random_person._id) +
+                        ' because ' + str(random_person._id) + ' is vaccinated' + '\n')
+                self.vacc_save += 1
+            elif random_person.infected:
+                f.write(str(sick_person._id) + ' did not infect ' + str(random_person._id) +
+                        ' because ' + str(random_person._id) + ' is already infected' + '\n')
+            else:
+                f.write(str(sick_person._id) + ' did not infect ' + str(random_person._id) +
+                        ' because ' + str(random_person._id) + ' got lucky' + '\n')
+
 
 
 
