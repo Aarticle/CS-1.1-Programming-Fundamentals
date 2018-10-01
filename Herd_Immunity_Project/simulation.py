@@ -107,24 +107,25 @@ class Simulation(object):
         # TODO: Call self._create_population() and pass in the correct parameters.
         # Store the array that this method will return in the self.population attribute.
 
-    def _create_population(self, population, population_size, initial_infected, vacc_percentage):
+    def _create_population(self, initial_infected, vacc_percentage):
         population = []
         infected_count = 0
-        id = 0
-        while len(population) != population_size:
+        while len(population) != self.population_size:
             id = len(population)
             if infected_count !=  initial_infected:
                 #Set person ID and add sick population
-                population.append(Person(id, False, self._virus))
+                infected_person = Person(len(population), False, True)
+                population.append(infected_person)
+                self.current_infected.append(infected_person)
+                self.total_infected += 1
                 infected_count += 1
-                print(infected_count)
             else:
-                if(random.random() < vacc_percentage):
-                     population.append(Person(id, True))
-                else:
-                     population.append(Person(id, False))
+                vaccine = random.uniform(0, 1) < vacc_percentage
+                healthy_person = Person(len(population), vaccine)
+                population.append(healthy_person)
 
-            return population
+
+        return population
 
 
     def _simulation_should_continue(self):
@@ -158,9 +159,9 @@ class Simulation(object):
         should_continue = self._simulation_should_continue()
         while should_continue:
             self.time_step()
-            should_continue = self._simulation_should_continue()
             time_step_counter += 1
-            self.logger.log_time_step(time_step_counter)
+            should_continue = self._simulation_should_continue()
+            self.logger.log_time_step(time_step_counter, self.infected_count)
         print('The simulation has ended after {} turns.'.format(time_step_counter))
 
 
