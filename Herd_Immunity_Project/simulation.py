@@ -109,18 +109,19 @@ class Simulation(object):
     def _create_population(self, population, population_size, initial_infected, vacc_percentage):
         population = []
         infected_count = 0
-        next_person_id = 0
+        id = 0
         while len(population) != population_size:
-            next_person_id = len(population)
+            id = len(population)
             if infected_count !=  initial_infected:
                 #Set person ID and add sick population
-                population.append(Person(next_person_id, False, self._virus))
+                population.append(Person(id, False, self._virus))
                 infected_count += 1
+                print(infected_count)
             else:
                 if(random.random() < vacc_percentage):
-                     population.append(Person(next_person_id, True))
+                     population.append(Person(id, True))
                 else:
-                     population.append(Person(next_person_id, False))
+                     population.append(Person(id, False))
 
             return population
 
@@ -133,7 +134,7 @@ class Simulation(object):
         #     - There are no infected people left in the population.
         # In all other instances, the simulation should continue.
         for person in self.population:
-            if person.is_alive and person.infected:
+            if person.is_alive and not person.is_vaccinated:
                 return True
         return False
 
