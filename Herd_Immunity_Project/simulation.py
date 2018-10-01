@@ -74,11 +74,11 @@ class Simulation(object):
     def __init__(self, population_size, vacc_percentage, virus, virus_name,
                  mortality_rate, basic_repro_num, is_alive=True, initial_infected=1):
         self.population_size = population_size
-        self.population = []
+        # self.population = []
         self.total_infected = 0
         self.vacc_percentage = vacc_percentage
         self.virus = virus
-        self.current_infected = 0
+        # self.current_infected = 0
         self.next_person_id = 0
         self.virus_name = virus_name
         self.mortality_rate = mortality_rate
@@ -90,6 +90,7 @@ class Simulation(object):
         # catch the infection during a given time step. Store each newly
         # infected person's .ID attribute in here.
         self.newly_infected = []
+        self.current_infected = []
 
         # TODO: Create a Logger object and bind it to self.logger.  You should use this
         # logger object to log all events of any importance during the simulation.  Don't forget
@@ -102,7 +103,7 @@ class Simulation(object):
         # person's .ID attribute in here.  At the end of each time step, we'll call
         # self._infect_newly_infected() and then reset .newly_infected back to an empty
         # list.
-        self.population = self._create_population(initial_infected,population_size, initial_infected, vacc_percentage)
+        self.population = self._create_population(initial_infected, vacc_percentage)
         # TODO: Call self._create_population() and pass in the correct parameters.
         # Store the array that this method will return in the self.population attribute.
 
