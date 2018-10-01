@@ -102,7 +102,6 @@ class Simulation(object):
         # person's .ID attribute in here.  At the end of each time step, we'll call
         # self._infect_newly_infected() and then reset .newly_infected back to an empty
         # list.
-        self.newly_infected = []
         self.population = self._create_population(initial_infected,population_size, initial_infected, vacc_percentage)
         # TODO: Call self._create_population() and pass in the correct parameters.
         # Store the array that this method will return in the self.population attribute.
@@ -217,8 +216,9 @@ class Simulation(object):
         #   - Set this Person's .infected attribute to True.
         # NOTE: Once you have iterated through the entire list of self.newly_infected, remember
         # to reset self.newly_infected back to an empty list!
-        for sickPersonId in self.newly_infected:
-            self.population[sickPersonId].infected = True
+        for person in self.newly_infected:
+            person.infect(self._virus)
+
         self.newly_infected = []
 
 if __name__ == "__main__":
