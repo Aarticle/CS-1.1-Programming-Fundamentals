@@ -139,7 +139,10 @@ class Simulation(object):
         for person in self.population:
             if person.is_alive and not person.is_vaccinated:
                 return True
-        return False
+            elif self.current_infected == 0:
+                return False
+            else:
+                return False
 
 
     def run(self):
