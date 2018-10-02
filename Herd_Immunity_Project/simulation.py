@@ -161,7 +161,7 @@ class Simulation(object):
             self.time_step()
             time_step_counter += 1
             should_continue = self._simulation_should_continue()
-            self.logger.log_time_step(time_step_counter, self.infected_count)
+            self.logger.log_time_step(time_step_counter)
         print('The simulation has ended after {} turns.'.format(time_step_counter))
 
 
@@ -178,7 +178,7 @@ class Simulation(object):
             #               - Call simulation.interaction(person, random_person)
             #               - Increment interaction counter by 1.
         interactions = 0
-        for sick_person in self.current_infected:
+        for infected_person in self.current_infected:
             while interactions < 100:
                 alive = False
                 while not alive:
@@ -202,19 +202,17 @@ class Simulation(object):
         # people are selected for an interaction.  That means that only living people
         # should be passed into this method.  Assert statements are included to make sure
         # that this doesn't happen.
-        assert sick_person.is_alive == True
-        assert random_person.is_alive == True
-        did_infect = False
+        assert infected_person.is_alive == True
+        assert new_person.is_alive == True
         if new_person.is_vaccinated or new_person.infected:
             pass
         else:
-            got_infected = random.uniform(0, 1) < self.basic_repro_num
-            if got_infected:
-                self.newly_infected.append(random_person._id)
+            new_infection = random.uniform(0, 1) < self.basic_repro_num
+            if new_infection:
+                self.newly_infected.append(new_person._id)
                 self.total_infected += 1
-                did_infect = True
 
-        self.logger.log_interaction(sick_person, random_person, did_infect)
+        self.logger.log_interaction(infected_person, new_person)
 
     def _infect_newly_infected(self):
         # TODO: Finish this method! This method should be called at the end of
@@ -226,8 +224,11 @@ class Simulation(object):
         #   - Set this Person's .infected attribute to True.
         # NOTE: Once you have iterated through the entire list of self.newly_infected, remember
         # to reset self.newly_infected back to an empty list!
-        for person in self.newly_infected:
-            person.infect(self._virus)
+        for _id in self.newly_infected:
+            for person in self.population:
+                if person._id == _id:
+                    person.infected = True
+                    self.current_infected.append(person)
 
         self.newly_infected = []
 
