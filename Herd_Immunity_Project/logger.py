@@ -93,7 +93,7 @@ class Logger(object):
         with open('./logs/' + self.file_name, 'a') as f:
             f.write(interaction)
 
-    def log_infection_survival(self, sick_person, random_person, did_infect=None):
+    def log_infection_survival(self, infected_person, new_person, spread_infection=None):
         # TODO: Finish this method.  The Simulation object should use this method to log
         # the results of every call of a Person object's .resolve_infection() method.
         # If the person survives, did_die_from_infection should be False.  Otherwise,
@@ -101,19 +101,18 @@ class Logger(object):
         # on the format of the log.
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-
-            if did_infect:
-                f.write(str(sick_person._id) + ' infected ' + str(random_person._id) + '\n')
-            elif random_person.is_vaccinated:
-                f.write(str(sick_person._id) + ' did not infect ' + str(random_person._id) +
-                        ' because ' + str(random_person._id) + ' is vaccinated' + '\n')
+            if spread_infection:
+                f.write(str(infected_person._id) + ' infected ' + str(new_person._id) + '\n')
+            # elif new_person.is_vaccinated:
+            #     f.write(str(infected_person._id) + ' did not infect ' + str(new_person._id) +
+            #             ' because ' + str(new_person._id) + ' is vaccinated' + '\n')
                 self.vacc_save += 1
-            elif random_person.infected:
-                f.write(str(sick_person._id) + ' did not infect ' + str(random_person._id) +
-                        ' because ' + str(random_person._id) + ' is already infected' + '\n')
+            elif new_person.infected:
+                f.write(str(infected_person._id) + ' did not infect ' + str(new_person._id) +
+                        ' because ' + str(new_person._id) + ' is already infected' + '\n')
             else:
-                f.write(str(sick_person._id) + ' did not infect ' + str(random_person._id) +
-                        ' because ' + str(random_person._id) + ' got lucky' + '\n')
+                f.write(str(infected_person._id) + ' did not infect ' + str(new_person._id) +
+                        ' because ' + str(infected_person._id) + ' got lucky' + '\n')
 
 
 

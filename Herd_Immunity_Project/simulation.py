@@ -204,6 +204,7 @@ class Simulation(object):
         # that this doesn't happen.
         assert infected_person.is_alive == True
         assert new_person.is_alive == True
+        spread_infection = False
         if new_person.is_vaccinated or new_person.infected:
             pass
         else:
@@ -212,7 +213,7 @@ class Simulation(object):
                 self.newly_infected.append(new_person._id)
                 self.total_infected += 1
 
-        self.logger.log_interaction(infected_person, new_person)
+        self.logger.log_interaction(infected_person, new_person, spread_infection)
 
     def _infect_newly_infected(self):
         # TODO: Finish this method! This method should be called at the end of
