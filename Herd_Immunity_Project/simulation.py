@@ -178,14 +178,14 @@ class Simulation(object):
             #               - Call simulation.interaction(person, random_person)
             #               - Increment interaction counter by 1.
         interactions = 0
-        for infected_person in self.current_infected:
+        for sick_person in self.current_infected:
             while interactions < 100:
                 alive = False
                 while not alive:
-                    new_person = self.population[random.randint(0, self.population_size - 1)]
-                    if new_person.is_alive:
+                    random_person = self.population[random.randint(0, self.population_size - 1)]
+                    if random_person.is_alive:
                         alive = True
-                    self.interaction(infected_person, new_person)
+                    self.interaction(sick_person, random_person)
                     interactions += 1
             interactions = 0
 
@@ -197,23 +197,23 @@ class Simulation(object):
             self.current_infected = []
             self._infect_newly_infected()
 
-    def interaction(self, infected_person, new_person):
+    def interaction(self, sick_person, random_person):
         # TODO: Finish this method! This method should be called any time two living
         # people are selected for an interaction.  That means that only living people
         # should be passed into this method.  Assert statements are included to make sure
         # that this doesn't happen.
-        assert infected_person.is_alive == True
-        assert new_person.is_alive == True
+        assert sick_person.is_alive == True
+        assert random_person.is_alive == True
         spread_infection = False
-        if new_person.is_vaccinated or new_person.infected:
+        if random_person.is_vaccinated or random_person.infected:
             pass
         else:
             new_infection = random.uniform(0, 1) < self.basic_repro_num
             if new_infection:
-                self.newly_infected.append(new_person._id)
+                self.newly_infected.append(random_person._id)
                 self.total_infected += 1
 
-        self.logger.log_interaction(infected_person, new_person, spread_infection)
+        self.logger.log_interaction(sick_person, random_person, spread_infection)
 
     def _infect_newly_infected(self):
         # TODO: Finish this method! This method should be called at the end of

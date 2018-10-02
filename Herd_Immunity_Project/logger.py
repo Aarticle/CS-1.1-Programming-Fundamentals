@@ -75,8 +75,7 @@ class Logger(object):
 
 
 
-    def log_interaction(self, person1, person2, did_infect=None,
-                        person2_vacc=None, person2_sick=None):
+    def log_interaction(self, sick_person, random_person, spread_infection=None):
         # TODO: Finish this method.  The Simulation object should use this method to
         # log every interaction a sick individual has during each time step.  This method
         # should accomplish this by using the information from person1 (the infected person),
@@ -88,12 +87,21 @@ class Logger(object):
         # all the possible edge cases!
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-        interaction = ("{}\t{}\t{}\t{}\t{}\n".format(person1, person2,
-                       did_infect, person2_vacc, person2_sick))
-        with open('./logs/' + self.file_name, 'a') as f:
-            f.write(interaction)
+        with open(self.file_name, 'a') as f:
+            if spread_infection:
+                f.write(str(sick_person._id) + ' infected ' + str(random_person._id) + '\n')
+            elif random_person.is_vaccinated:
+                f.write(str(sick_person._id) + ' did not infect ' + str(random_person._id) +
+                        ' because ' + str(random_person._id) + ' is vaccinated' + '\n')
+                # self.vacc_save += 1
+            elif random_person.infected:
+                f.write(str(sick_person._id) + ' did not infect ' + str(random_person._id) +
+                        ' because ' + str(random_person._id) + ' is already infected' + '\n')
+            else:
+                f.write(str(sick_person._id) + ' did not infect ' + str(random_person._id) +
+                        ' because ' + str(random_person._id) + ' got lucky' + '\n')
 
-    def log_infection_survival(self, infected_person, new_person, spread_infection=None):
+    def log_infection_survival(self, person, survived):
         # TODO: Finish this method.  The Simulation object should use this method to log
         # the results of every call of a Person object's .resolve_infection() method.
         # If the person survives, did_die_from_infection should be False.  Otherwise,
@@ -101,18 +109,12 @@ class Logger(object):
         # on the format of the log.
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-            if spread_infection:
-                f.write(str(infected_person._id) + ' infected ' + str(new_person._id) + '\n')
-            # elif new_person.is_vaccinated:
-            #     f.write(str(infected_person._id) + ' did not infect ' + str(new_person._id) +
-            #             ' because ' + str(new_person._id) + ' is vaccinated' + '\n')
-                self.vacc_save += 1
-            elif new_person.infected:
-                f.write(str(infected_person._id) + ' did not infect ' + str(new_person._id) +
-                        ' because ' + str(new_person._id) + ' is already infected' + '\n')
-            else:
-                f.write(str(infected_person._id) + ' did not infect ' + str(new_person._id) +
-                        ' because ' + str(infected_person._id) + ' got lucky' + '\n')
+            with open(self.file_name, 'a') as f:
+                if survived:
+                    f.write(str(person._id) + ' survived.' + '\n')
+                else:
+                    f.write(str(person._id) + ' died.' + '\n')
+                    self.total_dead += 1
 
 
 
@@ -126,6 +128,6 @@ class Logger(object):
         # to compute these statistics for you, as a Logger's job is just to write logs!
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-            with open('./logs/'+self.file_name, "a") as f:
-                f.write("~~~~ End of {} Timestep ~~~~\n, \nStart of {} timestep\n"
-                    .format(time_step_number, time_step_number + 1))
+            with open(self.file_name, 'a') as f:
+                f.write('Time step ' + str(time_step_number) + ' ended, '
+                    'beginning ' + str(time_step_number + 1) + '...' + '\n')
