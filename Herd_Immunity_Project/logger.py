@@ -114,7 +114,7 @@ class Logger(object):
                     f.write(str(person._id) + ' survived.' + '\n')
                 else:
                     f.write(str(person._id) + ' died.' + '\n')
-                    self.total_dead += 1
+                    # self.total_dead += 1
 
 
 

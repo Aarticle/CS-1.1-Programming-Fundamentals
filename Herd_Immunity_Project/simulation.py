@@ -202,8 +202,8 @@ class Simulation(object):
         # people are selected for an interaction.  That means that only living people
         # should be passed into this method.  Assert statements are included to make sure
         # that this doesn't happen.
-        assert sick_person.is_alive == True
-        assert random_person.is_alive == True
+        # assert sick_person.is_alive == True
+        # assert random_person.is_alive == True
         spread_infection = False
         if random_person.is_vaccinated or random_person.infected:
             pass
