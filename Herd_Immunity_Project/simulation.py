@@ -71,7 +71,7 @@ class Simulation(object):
         -- Once len(population) is the same as self.population_size, returns population.
     '''
 
-    def __init__(self, population_size, vacc_percentage, virus, virus_name,
+    def __init__(self, population_size, vaccine_percentage, virus, virus_name,
                  mortality_rate, basic_repro_num, is_alive=True, initial_infected=1):
         self.population_size = population_size
         self.population = []
@@ -79,14 +79,17 @@ class Simulation(object):
         self.virus_name = virus_name
         self.mortality_rate = mortality_rate
         self.basic_repro_num = basic_repro_num
+        self.initial_infected = 1
         self.total_infected = 0
-        self.vacc_percentage = vacc_percentage
+        self.vaccine_percentage = vacc_percentage
         self.virus = virus
         self.total_infected = 0
         self.total_dead = 0
-        self._virus = Virus(virus_name, mortality_rate, basic_repro_num)
+        self.vaccinated = 0
+        self.survived = 0
         self.file_name = "{}_simulation_pop_{}_vp_{}_infected_{}.txt".format(
-            virus_name, population_size, vacc_percentage, initial_infected)
+            virus_name, population_size, vaccine_percentage, initial_infected)
+        self.logger = Logger("log-py")
         # This attribute will be used to keep track of all the people that
         # catch the infection during a given time step. Store each newly
         # infected person's .ID attribute in here.
@@ -97,23 +100,22 @@ class Simulation(object):
         # logger object to log all events of any importance during the simulation.  Don't forget
         # to call these logger methods in the corresponding parts of the simulation!
         self.logger = Logger(self.file_name)
-        self.logger.write_metadata(population_size, vacc_percentage, virus_name, mortality_rate, basic_repro_num)
+        self.logger.write_metadata(population_size, vaccine_percentage, virus_name, mortality_rate, basic_repro_num)
 
         # This attribute will be used to keep track of all the people that catch
         # the infection during a given time step. We'll store each newly infected
         # person's .ID attribute in here.  At the end of each time step, we'll call
         # self._infect_newly_infected() and then reset .newly_infected back to an empty
         # list.
-        self.population = self._create_population(initial_infected, vacc_percentage)
+        self.population = self._create_population(initial_infected, vaccine_percentage)
         # TODO: Call self._create_population() and pass in the correct parameters.
         # Store the array that this method will return in the self.population attribute.
 
-    def _create_population(self, initial_infected, vacc_percentage):
+    def _create_population(self, initial_infected, vaccine_percentage):
         population = []
         infected_count = 0
         while len(population) != self.population_size:
-            id = len(population)
-            if infected_count !=  initial_infected:
+            if infected_count !=  self.initial_infected:
                 #Set person ID and add sick population
                 infected_person = Person(len(population), False, True)
                 population.append(infected_person)
@@ -121,10 +123,10 @@ class Simulation(object):
                 self.total_infected += 1
                 infected_count += 1
             else:
-                vaccine = random.uniform(0, 1) < vacc_percentage
+                vaccine = random.uniform(0, 1) < vaccine_percentage
                 healthy_person = Person(len(population), vaccine)
                 population.append(healthy_person)
-
+                self.vaccinated +=1
 
         return population
 
@@ -136,13 +138,11 @@ class Simulation(object):
         #     - The entire population is dead.
         #     - There are no infected people left in the population.
         # In all other instances, the simulation should continue.
-        for person in self.population:
-            if person.is_alive and not person.is_vaccinated:
-                return True
-            elif self.current_infected == 0:
-                return False
-            else:
-                return False
+        if len(self.newly_infected) == 0:
+            return False
+        else:
+            return True
+
 
 
     def run(self):
@@ -156,17 +156,24 @@ class Simulation(object):
         # have passed using the time_step_counter variable.  Make sure you remember to
         # the logger's log_time_step() method at the end of each time step, pass in the
         # time_step_counter variable!
-        self.logger.write_metadata(self.population_size, self.vacc_percentage,
+        self.logger.write_metadata(self.population_size, self.vaccine_percentage,
                                    self.virus, self.mortality_rate,
                                    self.basic_repro_num)
         time_step_counter = 0
-        should_continue = self._simulation_should_continue()
+        should_continue = True
         while should_continue:
             self.time_step()
-            time_step_counter += 1
-            should_continue = self._simulation_should_continue()
             self.logger.log_time_step(time_step_counter)
-        print('The simulation has ended after {} turns.'.format(time_step_counter))
+            time_step_counter += 1
+            for person in self.population:
+                if person.infected != None:
+                    if person.did_survive_infection(mortality_rate):
+                        self.survived += 1
+                else:
+                    self.total_dead += 1
+            should_continue = self._simulation_should_continue()
+            print("The simulation has ended after " + str(time_step_counter) + " turns.")
+
 
 
     def time_step(self):
