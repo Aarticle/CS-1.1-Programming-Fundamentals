@@ -47,7 +47,7 @@ class Person(object):
         self._id = None
         self.is_vaccinated = None
         self.is_alive = None
-        self.infected = None
+        self.infected_with = None
 
 
     def did_survive_infection():
